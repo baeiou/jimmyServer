@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+
+  <link href="/css/jquery-ui.min.css" rel="stylesheet">
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="/js/freemarker.js"></script>
+  <script type="text/javascript" src="/js/utils.js"></script>
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<style>
+.td1{border:1px solid #F00;padding: 0px;margin: 0px;}
+</style>
+<body>
+<lable for="kw">搜表：</lable><BR>
+<input id="kw" name="kw" type="text" size="60" onkeypress='if(event.keyCode==13){aa();}'/>
+<BR>
+<a href="/index.html">搜动作</a>
+<input id="cnTableName" type="hidden" value=""/>
+<input id="tableName" type="hidden" value=""/>
+<input id="db" type="hidden" value=""/>
+<input id="type" type="hidden" value=""/>
+<input id="primaryKey" type="hidden" value=""/>
+<input id="lastModifyTime" type="hidden" value=""/>
+</body>
+<script language="JavaScript">
+  var fieldTyps=[];
+  $(document).ready(function () {
+    $.ajax({
+      url:"/table/getFieldType",
+      type:"get",
+      dataType:"json",
+      async:false,
+      success:function (data) {
+        fieldTyps=data;
+      }
+    });
+    $("#kw").autocomplete({
+      source: function (request, response) {
+        if ("" != $("#kw").val()) {
+          $.ajax({
+            url: "/table/search?kw=" + $("#kw").val(),
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+              response($.map(data, function (item) {
+                return {
+                  label: item.label,
+                  value: item.value,
+                  db:item.db,
+                  type: item.type,
+                  primaryKey: item.primaryKey,
+                  lastModifyTime: item.lastModifyTime
+                }
+              }));
+            }
+          });
+        }
+      },
+      select: function (event, ui) {
+        $("#tableName").val(ui.item.label.split(" ")[0]);
+        $("#cnTableName").val(ui.item.label.split(" ")[1]);
+        $("#db").val(ui.item.db);
+        $("#type").val(ui.item.type);
+        $("#primaryKey").val(ui.item.primaryKey);
+        $("#lastModifyTime").val(ui.item.lastModifyTime);
+      }
+    });
+  });
+
+  function aa() {
+    var idStr = "dialog-table-" + $("#kw").val();
+    if ($("#" + idStr).length == 0) {
+      $.ajax({
+        url: "/table/getFields?kw=" + $("#kw").val()+"&type="+$("#type").val(),
+        type: "get",
+        async: false,
+        dataType: "json",
+        success: function (data) {
+          typeName="";
+          if($("#type").val()=="0")typeName="普通表";
+          if($("#type").val()=="1")typeName="引用表";
+          if($("#type").val()=="2")typeName="视图";
+          var p = {
+            tableName: $("#tableName").val(),
+            cnTableName: $("#cnTableName").val(),
+            db: $("#db").val(),
+            typeName:typeName,
+            primaryKey: $("#primaryKey").val(),
+            lastModifyTime: $("#lastModifyTime").val(),
+            fieldTyps:fieldTyps,
+            fields: data
+          };
+          $("body").append("<div id=\"" + idStr + "\" title=\"" + $("#kw").val() + "(" + $(
+              "#cnTableName").val() + ")\"></div>");
+          $("#" + idStr).dialog({
+            autoOpen: false,
+            height: 450,
+            width: 723,
+          });
+          var h2 = cc("/templete/f1.html", p);
+          $("#" + idStr).html(h2);
+        }
+      });
+    }
+    $("#" + idStr).dialog("open");
+  }
+
+
+
+</script>
+</html>

@@ -1,0 +1,82 @@
+<table border="1px solid #ccc" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><nobr>菜单：${result[0].SF07}-&gt;${result[0].SF01}-&gt;${result[0].SF02}-&gt;${result[0].SF03}</nobr></td>
+    <td><nobr>入口标识：${result[0].SE02}</nobr></td>
+    <td><nobr>入口名称：${result[0].SE09}</nobr></td>
+    <td><nobr>
+      表格：${result[0].SF28}
+      <#if (this.result[0].SF28=="")>${result[0].SE06}</#if>
+    <input type="hidden" name="SE01" value="${result[0].SE01.formatHTML()}"/>
+    <input type="hidden" name="SE02" value="${result[0].SE02.formatHTML()}"/>
+      <#if result[0].SR03??>
+    <input type="hidden" name="SR03" value="${result[0].SR03.formatHTML()}"/>
+    </#if>
+      </nobr> </td>
+  </tr>
+</table>
+<table border="1px solid #ccc" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>事件前</td>
+    <td>
+<textarea name="SE03" rows="5" cols="80">${result[0].SE03.formatHTML()}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td>逻辑方法</td>
+    <td>
+<textarea name="SE04" rows="5" cols="80">${result[0].SE04.formatHTML()}</textarea>
+    </td>
+  </tr>
+
+  <tr>
+    <td>事件后</td>
+    <td>
+<textarea name="SE05" rows="5" cols="80">${result[0].SE05.formatHTML()}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td>faceId</td>
+    <td><#if result[0].SP04??>${result[0].SP04.formatHTML()}</#if></td>
+  </tr>
+  <tr>
+    <td>跳转页</td>
+    <td>
+      <#if result[0].SP05??>
+      ${result[0].SP05.formatHTML()}
+      <#else>
+      <#if result[0].SR03??>${result[0].SR03.formatHTML()} </#if>
+      </#if>
+    </td>
+  </tr>
+  <#if result[0].SP09??>
+  <tr>
+    <td>
+      页面脚本引入
+    </td>
+    <td>
+     <textarea name="SP09" rows="5" cols="80">${result[0].SP09.formatHTML()}</textarea>
+    </td>
+  <tr>
+  </#if>
+  <tr>
+    <td>
+      事件类型
+    </td>
+    <td>
+      <select name="SE15">
+        <#list option as opt1>
+        <option value="${opt1.value}" <#if (this.opt1.value==this.result[0].SE15)>selected</#if>>${opt1.key}</option>
+        </#list>
+      </select>
+    </td>
+  <tr>
+  <tr>
+    <td>
+      脚本事件
+    </td>
+    <td>
+      <textarea name="SE14" rows="5" cols="80">${result[0].SE14.formatHTML()}</textarea>
+    </td>
+  <tr>
+</table>
+<input type="button" value="保存" onclick='save("${idStr}")'/>

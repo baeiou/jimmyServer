@@ -1,0 +1,41 @@
+<table border="1px solid #ccc" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><nobr>数据库：${db}</nobr></td>
+    <td><nobr>类型：${typeName}</nobr></td>
+    <td><nobr>表名：${tableName}</nobr></td>
+    <td><nobr>表描述：${cnTableName}</nobr></td>
+    <td><nobr>主键：${primaryKey}</nobr></td>
+    <td><nobr>最后修改时间：${lastModifyTime}</nobr></td>
+  </tr>
+</table>
+<BR>
+<#if fields[0].SV01??>
+<table border="1px solid #ccc" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>视图SQL</td>
+    <td>
+      <textarea name="SV01" rows="5" cols="80">${fields[0].SV01.formatHTML()}</textarea>
+    </td>
+  </tr>
+</table>
+</#if>
+<BR/>
+<table  border="1px solid #ccc" cellspacing="0" cellpadding="0">
+  <tr><td>字段名称</td><td>字段中文</td><td>字段类型</td><td>字段长度</td><td>字段描述</td></tr>
+<#list fields as item>
+<tr>
+  <td><input type="text" name="name_${item.SF01}" size="5" value="${item.SF01}"/></td>
+  <td><input type="text" name="cn_${item.SF01}" size="15" value="${item.SF02}"/></td>
+  <td>
+  <select name="ftype_${item.SF01}">
+    <#list fieldTyps as opt1>
+    <option value="${opt1.name}" <#if this.opt1.name==this.item.SF03>selected</#if>>${opt1.name}、${opt1.cn}</option>
+    </#list>
+  </select>
+  </td>
+  <td><input type="text" name="lng_${item.SF01}" size="5" value="${item.SF04}"/></td>
+  <td><input type="text" name="depict_${item.SF01}" size="25" value="${item.SF12.formatHTML()}"/></td>
+  </td>
+</tr>
+</#list>
+</table>
